@@ -60,7 +60,7 @@ def bars(data, unit="", ranked=False, empty="아직 데이터가 없어요."):
     top = max(data.values()) or 1
     rows = "".join(
         f'<div class="bar-row"><span class="n" data-r="{i}">{escape(str(k))}</span>'
-        f'<span class="t"><i style="width:{max(v / top * 100, 2):.0f}%"></i></span><span class="c">{v:g}{unit}</span></div>'
+        f'<span class="t"><i style="width:{max(v / top * 100, 2):.0f}%"></i></span><span class="c">{(f"{v:,}" if isinstance(v, int) else f"{v:g}")}{unit}</span></div>'
         for i, (k, v) in enumerate(data.items(), 1))
     return f'<div class="bars{" rank-list" if ranked else ""}">{rows}</div>'
 
