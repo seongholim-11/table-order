@@ -1,0 +1,55 @@
+/* 라이트 모드: ?theme=light 일 때 app.css 뒤에 덧씌운다. 기본(다크) 색은 app.css 에 있다. */
+.stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] { background: #f6f6f8 !important; color: #1c1c20; }
+.stApp p, .stApp label, .stApp li, .stApp h1, .stApp h2, .stApp h3, .stApp [data-testid="stMarkdownContainer"] { color: inherit; }
+[data-testid="stHtml"] { color: #1c1c20; }
+[data-testid="stBaseButton-secondary"] { background: #fff; border-color: #d4d4dc; color: #26262b; }
+[data-testid="stBaseButton-secondary"] p { color: #26262b; }
+[data-testid="stBaseButton-secondary"]:hover { border-color: #e08600; color: #e08600; }
+[data-testid="stBaseButton-secondary"]:hover p { color: #e08600; }
+[data-testid="stBaseButton-primary"]:disabled,
+[data-testid="stBaseButton-secondary"]:disabled { background: #e6e6ec; border-color: #d4d4dc; color: #7a7a86; }
+[data-testid="stBaseButton-primary"]:disabled p,
+[data-testid="stBaseButton-secondary"]:disabled p { color: #7a7a86 !important; }
+.st-key-header { border-bottom-color: #dcdce3; }
+.brand .sub, .mdesc, .cart-line .o, .cart-empty, .qr-text .c, .login-pop small, .qz-hint, .login-timer, .login-foot, .mlog li .t, .qz-progress .t, .qz-auto small, .rw-title .s { color: #6b6b76; }
+.table-chip { background: #fff; border-color: #d4d4dc; }
+.table-chip b, .section-title span, .cart-title span, .mprice, .total-row b, .combo-pricing strong, .mlog-title span, .mlog li em, .qz-progress .n, .qz-group, .splash .big span, .promo .h { color: #d98200; }
+[class*="st-key-card_"], .st-key-cart_panel, .st-key-ai_preferences, [class*="st-key-ai_combo_"], .st-key-qr_card, .mlog, [class*="st-key-quiz_opt_"] { background: #fff; border-color: #dcdce3; }
+.st-key-ai_combo_1 { background: linear-gradient(135deg, #f1eaff, #fff 70%); border-color: #a68ad4; }
+.thumb > .beverage-photo { background: #efeff3; }
+.total-row, .order-item, .qz-auto, .splash .slogan { color: #3c3c46; }
+.order-box, .qz-chip { background: #eeeef3; border-color: #dcdce3; }
+.promo { background: linear-gradient(135deg, #fff, #eeeef3); border-color: #dcdce3; }
+.promo .t { color: #6b6b76; }
+.rw-title, .rw-title h2, .qr-text, .login-status { color: #1c1c20; }
+.rw-title .q, .rw-hint { color: #55555f; }
+.rw-result { background: #fff4d6; }
+.rw-result .t, .rw-result .n { color: #6b6b76; }
+.rw-bubble { background: #e8eeff; border-color: #b9c6ee; color: #26304f; }
+.ai-hero { background: radial-gradient(ellipse at top right, #e4d4ff 0, #efe6ff 45%, #f8f4ff 100%); border-color: #b9a3e6; }
+.ai-eyebrow { color: #5b3fd9; }
+.ai-hero p, .combo-reason p, .combo-pricing small, .combo-item b { color: #4a4458; }
+.ai-results-title small, .combo-item small, .combo-pricing del { color: #6b6b76; }
+.combo-rank { background: #e6dcf5; color: #4a3a6a; }
+.combo-top, .combo-reason strong, .combo-discount { color: #6b3fd0; }
+.combo-emoji { background: #eeeaf3; }
+.combo-reason { background: #f3eefa; }
+.cart-savings { background: #f1e9fb; color: #6b3fd0; }
+.login-steps .ls { background: #e9e9ef; color: #6b6b76; }
+.login-steps .ls i { background: #cfcfd8; color: #26262b; }
+.login-steps .ls.active { background: #ffe9b8; color: #8a5a00; }
+.login-steps .ls.done { color: #1f8a4c; }
+.login-status.scanned { color: #1f8a4c; } .login-status.expired { color: #d12b2b; }
+.login-qr img { box-shadow: 0 6px 20px rgba(0,0,0,.15); }
+.mlog li { border-top-color: #e6e6ec; }
+.mlog li .n { background: #ffeab8; color: #8a5a00; }
+.qz-progress .bar { background: #dcdce3; }
+.qz-auto { color: #55555f; }
+[class*="st-key-quiz_opt_"] [data-testid="stBaseButton-secondary"]:hover { border-color: #f0560a; color: #f0560a; }
+[role="dialog"], [data-testid="stDialog"] [role="dialog"] { background: #fff !important; color: #1c1c20; }
+[data-testid="stDialog"] [data-testid="stHeading"], [data-testid="stDialog"] h1, [data-testid="stDialog"] h2, [data-testid="stDialog"] h3 { color: #1c1c20; }
+[data-testid="stDialog"] > div { background: rgba(30,30,40,.35); }
+hr { border-color: #dcdce3 !important; }
+[role="combobox"], .react-aria-ComboBox [role="group"], [data-baseweb="select"] > div, [data-baseweb="input"] > div, input, textarea { background: #fff !important; color: #1c1c20 !important; }
+[data-testid="stCaptionContainer"] p { color: #6b6b76; }
+.stApp [data-testid="stBaseButton-primary"] p { color: #1a1a1a; }

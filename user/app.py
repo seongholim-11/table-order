@@ -43,6 +43,7 @@ def init_state():
     ss = st.session_state
     # 새로고침해도 보던 화면으로 돌아오도록 URL(?page=order&cat=...)에서 복원한다. sync_url() 이 반대 방향을 맡는다.
     qp = st.query_params
+    ss.setdefault("theme", "light" if qp.get("theme") == "light" else "dark")  # ?theme=light 로 새로고침해도 유지
     ss.setdefault("page", "order" if qp.get("page") == "order" else "splash")
     ss.setdefault("cat", qp.get("cat") if qp.get("cat") in CATEGORY_BY_ID else "best")
     ss.setdefault("cart", {})        # key -> {id, name, opt, unit, qty}
@@ -132,6 +133,17 @@ def won(n):
 
 def go(page):
     st.session_state.page = page
+
+
+def toggle_theme():
+    ss = st.session_state
+    ss.theme = "dark" if ss.theme == "light" else "light"
+
+
+def theme_button(key):
+    """다크 ↔ 라이트 전환 버튼. 눌러야 할 다음 모드를 라벨로 보여 준다."""
+    light = st.session_state.theme == "light"
+    st.button("🌙 다크 모드" if light else "☀️ 라이트 모드", key=key, width="stretch", on_click=toggle_theme)
 
 
 # ============================== 다이얼로그 ==============================
@@ -461,6 +473,8 @@ def render_splash():
                         '<div class="c">로그인하지 않아도<br>주문은 할 수 있어요.</div></div>')
             if st.button("➕ 다른 회원 로그인" if member else "📱 로그인", key="login_open"):
                 login_dialog("more")
+        with st.container(key="theme_cta"):
+            theme_button("theme_toggle_splash")
         with st.container(key="start_cta"):
             st.button("🍴 회원 주문  ›" if member else "🍴 비회원 주문  ›", type="primary", width="stretch",
                       key="start_btn", on_click=go, args=("menu",))
@@ -484,6 +498,7 @@ def render_header():
             if st.button(f"🛒 장바구니 ({cart_count()})", width="stretch"):
                 cart_dialog()
             st.button("🏠 처음으로", width="stretch", on_click=go, args=("splash",))
+            theme_button("theme_toggle")
 
 
 def render_categories():
@@ -684,7 +699,9 @@ def sync_url():
     """현재 화면을 URL 쿼리에 반영한다 (splash·AI 질문 중에는 주문 화면 기준으로 둔다)."""
     qp = st.query_params
     want = {} if st.session_state.page == "splash" else {"page": "order", "cat": st.session_state.cat}
-    for k in ("page", "cat"):
+    if st.session_state.theme == "light":
+        want["theme"] = "light"
+    for k in ("page", "cat", "theme"):
         if want.get(k) is None:
             qp.pop(k, None)
         elif qp.get(k) != want[k]:
@@ -695,6 +712,8 @@ def main():
     init_state()
     sync_url()
     st.html(Path(__file__).with_name("app.css"))
+    if st.session_state.theme == "light":
+        st.html(Path(__file__).with_name("app_light.css"))
     if st.session_state.page == "splash":
         render_splash()
         return

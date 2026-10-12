@@ -19,7 +19,7 @@ button:focus-visible { outline: 3px solid #ffcf54 !important; outline-offset: 3p
 .st-key-header { padding-bottom: 20px; border-bottom: 1px solid #2c2c33; }
 .st-key-header > [data-testid="stLayoutWrapper"] > [data-testid="stHorizontalBlock"] { display: grid; grid-template-columns: minmax(250px, 1fr) 110px minmax(390px, 1.5fr); align-items: center; gap: 20px; }
 .st-key-header > [data-testid="stLayoutWrapper"] > [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { width: 100%; flex: none; }
-.st-key-header_actions { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px !important; }
+.st-key-header_actions { display: grid !important; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px !important; }
 .st-key-header_actions > [data-testid="stElementContainer"] { width: 100% !important; }
 .st-key-header_actions button { padding: 8px; }
 .brand { display: flex; align-items: center; gap: 12px; }
@@ -358,3 +358,6 @@ button:focus-visible { outline: 3px solid #ffcf54 !important; outline-offset: 3p
 @media (min-width: 761px) and (max-width: 1100px) {
   .st-key-order_layout > [data-testid="stLayoutWrapper"] > [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:nth-child(2) { max-height: calc(100dvh - 280px); }
 }
+
+.st-key-theme_cta { width: auto !important; flex: 0 0 auto !important; }
+.st-key-theme_cta button { min-height: 44px; white-space: nowrap; }
