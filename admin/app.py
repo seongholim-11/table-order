@@ -12,6 +12,7 @@ import pandas as pd
 import streamlit as st
 
 import admin_repository as repo_mod
+import marketing_ai
 from admin_dummy_data import Unsupported
 from order_filters import AI_ALL, AI_CHOICES, filter_orders
 from admin_repository import COLOR_PRESETS, DEFAULT_RULE, GRADES, ICON_DEFAULT, SPICY_LABELS, CategoryError
@@ -20,6 +21,7 @@ st.set_page_config(page_title="식당도우미 관리자", page_icon="🍺", lay
 st.html(Path(__file__).with_name("admin.css"))
 
 PAGES = ["대시보드", "메뉴 관리", "추천 가중치", "고객 등급", "주문 이력", "마케팅"]
+MARKETING_TABS = ["대시보드", "AI"]
 
 ss = st.session_state
 ss.setdefault("owner", False)
@@ -490,8 +492,7 @@ def sms_history(logs):
     return f'<div class="history">{rows}</div>'
 
 
-def page_marketing(repo):
-    page_head("마케팅", "수신 동의한 회원에게 문자를 보내 재방문을 이끌어요")
+def marketing_dashboard(repo):
     try:
         usage = repo.sms_usage()
     except Unsupported as e:
@@ -563,6 +564,36 @@ def page_marketing(repo):
     st.html(sms_history(repo.sms_logs()))
 
 
+def marketing_ai_tab(repo):
+    ctx = marketing_ai.build_context(repo, ss["grade_rule"])
+    sec_title("사장님을 위한 마케팅 추천", "매장의 모든 데이터를 바탕으로 정리했어요")
+    cards = "".join(f'<div class="rec"><div class="rt">{i}. {escape(r["title"])}</div>'
+                    f'<div class="rw">{escape(r["why"])}</div><div class="ra">👉 {escape(r["action"])}</div></div>'
+                    for i, r in enumerate(marketing_ai.recommend(ctx), 1))
+    st.html(f'<div class="recs">{cards}</div>')
+    sec_title("AI 챗봇", "궁금한 점을 물어보세요")
+    st.caption("🧪 지금은 규칙 기반 모의 응답이에요. 실제 AI(Claude API) 연동 지점은 `marketing_ai.py` 에 분리돼 있어요.")
+    chat = ss.setdefault("mk_chat", [{"role": "assistant", "content": marketing_ai.GREETING}])
+    box = st.container()
+    prompt = st.chat_input("예) 휴면 고객을 어떻게 다시 오게 할까?", key="mk_chat_input")
+    if prompt:
+        chat.append({"role": "user", "content": prompt})
+        chat.append({"role": "assistant", "content": marketing_ai.get_client().reply(prompt, ctx, chat[:-1])})
+    for msg in chat:
+        box.chat_message(msg["role"]).write(msg["content"])
+
+
+def page_marketing(repo):
+    page_head("마케팅", "수신 동의한 회원에게 문자를 보내 재방문을 이끌어요")
+    # 새로고침해도 보던 탭이 유지되도록 URL(?tab=...)에 저장하고 거기서 복원한다.
+    if "mk_tab" not in ss:
+        ss["mk_tab"] = st.query_params["tab"] if st.query_params.get("tab") in MARKETING_TABS else MARKETING_TABS[0]
+    tab = st.radio("마케팅 탭", MARKETING_TABS, key="mk_tab", horizontal=True, label_visibility="collapsed")
+    if st.query_params.get("tab") != tab:
+        st.query_params["tab"] = tab
+    {"대시보드": marketing_dashboard, "AI": marketing_ai_tab}[tab](repo)
+
+
 if not ss["owner"]:
     login()
     st.stop()
@@ -597,3 +628,5 @@ if page == "메뉴 관리" and ss["menu_cat"]:
         st.query_params["cat"] = ss["menu_cat"]
 else:
     st.query_params.pop("cat", None)
+if page != "마케팅":
+    st.query_params.pop("tab", None)
