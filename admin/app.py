@@ -603,13 +603,15 @@ def marketing_ai_tab(repo):
     sec_title("AI 챗봇", "궁금한 점을 물어보세요")
     st.caption("🧪 지금은 규칙 기반 모의 응답이에요. 실제 AI(Claude API) 연동 지점은 `marketing_ai.py` 에 분리돼 있어요.")
     chat = ss.setdefault("mk_chat", [{"role": "assistant", "content": marketing_ai.GREETING}])
-    box = st.container()
-    prompt = st.chat_input("예) 휴면 고객을 어떻게 다시 오게 할까?", key="mk_chat_input")
-    if prompt:
-        chat.append({"role": "user", "content": prompt})
-        chat.append({"role": "assistant", "content": marketing_ai.get_client().reply(prompt, ctx, chat[:-1])})
-    for msg in chat:
-        box.chat_message(msg["role"]).write(msg["content"])
+    # chat_input 을 컨테이너 안에 두면 화면 맨 아래에 고정되지 않고 패널 안에 놓인다(탭 전환 때 스크롤이 튀지 않는다).
+    with st.container(border=True, key="mk_chat_panel"):
+        box = st.container(height=380, border=False)
+        prompt = st.chat_input("예) 휴면 고객을 어떻게 다시 오게 할까?", key="mk_chat_input")
+        if prompt:
+            chat.append({"role": "user", "content": prompt})
+            chat.append({"role": "assistant", "content": marketing_ai.get_client().reply(prompt, ctx, chat[:-1])})
+        for msg in chat:
+            box.chat_message(msg["role"]).write(msg["content"])
 
 
 def page_marketing(repo):
