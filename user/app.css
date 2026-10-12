@@ -114,8 +114,8 @@ button:focus-visible { outline: 3px solid #ffcf54 !important; outline-offset: 3p
 .cart-empty .emoji { display: block; font-size: 36px; margin-bottom: 8px; }
 .st-key-cart_items [data-testid="stHorizontalBlock"], .st-key-dialog_cart_items [data-testid="stHorizontalBlock"] { flex-wrap: nowrap !important; gap: 8px; }
 .st-key-cart_items [data-testid="stColumn"], .st-key-dialog_cart_items [data-testid="stColumn"] { min-width: 0; flex: 1 1 0; }
-.st-key-cart_items, .st-key-dialog_cart_items { gap: 6px; }
-.st-key-cart_items hr, .st-key-dialog_cart_items hr { margin: 2px 0; }
+.st-key-cart_items, .st-key-dialog_cart_items { gap: 10px; }
+.st-key-cart_items hr, .st-key-dialog_cart_items hr { margin: 10px 0; }
 [class*="st-key-q_"] button { min-height: 44px; padding: 0; }
 .quantity { text-align: center; font-weight: 800; line-height: 44px; }
 .total-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px 12px; font-size: 14px; color: #bbb; }
