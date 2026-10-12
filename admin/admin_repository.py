@@ -25,6 +25,7 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from admin_dummy_data import DummyBackend, Unsupported  # noqa: E402
 from shared import api  # noqa: E402
+from user.menu_images import bundled_photo_uri  # noqa: E402
 
 ENDPOINTS = {
     "store": "/api/store",
@@ -144,7 +145,8 @@ class AdminRepository:
         """메뉴 id → 카드 썸네일에 쓸 {emoji, image_url, colors} (사진이 없으면 이모지+카테고리 색)."""
         payload = self.backend.menus()
         colors = {c["id"]: c.get("colors") or COLOR_PRESETS["보라"] for c in self.backend.categories_full()}
-        return {m["id"]: {"emoji": m.get("emoji") or "🍽️", "image_url": m.get("image_url") or "",
+        return {m["id"]: {"emoji": m.get("emoji") or "🍽️",
+                          "image_url": m.get("image_url") or bundled_photo_uri(m["id"]) or "",
                           "colors": colors.get(m["cat"], COLOR_PRESETS["보라"])} for m in payload["menus"]}
 
     # ---- 카테고리 CRUD (왼쪽 패널) ----

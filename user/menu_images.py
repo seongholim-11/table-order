@@ -37,12 +37,17 @@ def _photo_uri(photo_id):
     return "data:image/webp;base64," + base64.b64encode(data).decode("ascii")
 
 
+def bundled_photo_uri(menu_id):
+    """Data URI of the bundled photo for a menu id (aliases resolved), or None."""
+    photo_id = PHOTO_ALIASES.get(menu_id, menu_id)
+    return _photo_uri(photo_id) if photo_id in PHOTO_IDS else None
+
+
 def menu_image_html(item, photo_class="menu-photo", fallback_class=None):
     """Prefer a configured photo, then a bundled photo, then the menu emoji."""
     source = item.get("image_url") or ""
     if not source.startswith(("https://", "http://")):
-        photo_id = PHOTO_ALIASES.get(item["id"], item["id"])
-        source = _photo_uri(photo_id) if photo_id in PHOTO_IDS else None
+        source = bundled_photo_uri(item["id"])
     if source:
         if item.get("cat") in {"beer", "soju"} or item["id"] in {"d1", "d2"}:
             photo_class += " beverage-photo"
