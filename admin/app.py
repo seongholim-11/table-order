@@ -13,6 +13,7 @@ import streamlit as st
 
 import admin_repository as repo_mod
 from admin_dummy_data import Unsupported
+from dashboard_stats import summarize
 from order_filters import AI_ALL, AI_CHOICES, filter_orders
 from admin_repository import COLOR_PRESETS, DEFAULT_RULE, GRADES, ICON_DEFAULT, SPICY_LABELS, CategoryError
 
@@ -86,6 +87,33 @@ def login():
                    "OWNER(사장님)만 접근할 수 있고, MANAGER·STAFF 권한은 1차 Prototype에서 사용하지 않습니다.")
 
 
+def render_sales_insights(repo):
+    """매출·객단가·회전율 등 사장님용 추가 지표 (최근 30일, 가장 최근 주문일 기준)."""
+    x = summarize(repo.orders(), repo.members(ss["grade_rule"]))
+    sec_title("매출 분석", f"최근 {x.get('days', 0)}일 기준" if not x["empty"] else "")
+    if x["empty"]:
+        st.html('<div class="empty">아직 주문이 없어요.</div>')
+        return
+    kpi_row(
+        kpi("최근 매출", f"{x['revenue']:,}", "원", sub=f"하루 평균 {x['daily_revenue']:,}원", accent=True),
+        kpi("평균 객단가", f"{x['avg_ticket']:,}", "원", sub=f"주문 {x['orders']:,}건 기준"),
+        kpi("테이블 회전율", x["turnover_avg"], "회/일", sub=f"테이블 {x['tables']}개 · 마지막 영업일 {x['turnover_today']}회"),
+        kpi("재방문 고객 비율", f"{x['returning_share']:.0%}" if x["returning_share"] is not None else "-",
+            sub="주문 고객 중 재방문·단골"),
+    )
+    l, r = st.columns(2, gap="medium")
+    l.html(panel("시간대별 매출", f"가장 바쁜 시간은 {x['peak_hour']}", bars(x["by_hour"], "원")))
+    r.html(panel("요일별 매출", f"매출이 가장 높은 요일은 {x['peak_weekday']}요일", bars(x["by_weekday"], "원")))
+    l, r = st.columns(2, gap="medium")
+    l.html(panel("고객 등급별 주문 고객", "최근 주문한 고객 수", bars(x["customer_grades"], "명")))
+    r.html(panel("주문이 많은 테이블 TOP 5", "주문 건수 기준", bars(x["top_tables"], "건", ranked=True)))
+    if x["ai_avg_ticket"] is not None and x["plain_avg_ticket"] is not None:
+        kpi_row(
+            kpi("AI 추천 주문 객단가", f"{x['ai_avg_ticket']:,}", "원", sub=f"전체 주문의 {x['ai_share']:.0%}"),
+            kpi("일반 주문 객단가", f"{x['plain_avg_ticket']:,}", "원"),
+        )
+
+
 def page_dashboard(repo):
     s = repo.stats(ss["grade_rule"])
     ai = s["ai"]
@@ -96,6 +124,7 @@ def page_dashboard(repo):
         kpi("오늘 신규 고객", s["new_customers"], "명"),
         kpi("오늘 재방문 고객", s["returning_customers"], "명"),
     )
+    render_sales_insights(repo)
     sec_title("고객 분석")
     l, r = st.columns(2, gap="medium")
     l.html(panel("고객 연령대", "출생연도를 입력한 회원만 집계해요", bars(s["age_groups"], "명")))
