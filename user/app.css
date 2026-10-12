@@ -40,7 +40,7 @@ button:focus-visible { outline: 3px solid #ffcf54 !important; outline-offset: 3p
 .st-key-menu_grid > [data-testid="stLayoutWrapper"] { width: 100% !important; height: 100%; }
 [class*="st-key-card_"] { background: #1c1c20; border: 1px solid #2c2c33; border-radius: 18px; padding: 12px; height: 100%; gap: 12px; }
 [class*="st-key-card_"] > [data-testid="stElementContainer"]:last-child { margin-top: auto; }
-.thumb { height: 132px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 62px; position: relative; overflow: hidden; }
+.thumb { height: 176px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 72px; position: relative; overflow: hidden; }
 .thumb.big { height: 240px; font-size: 110px; }
 .thumb > .menu-photo { display: block; width: 100%; height: 100%; object-fit: cover; }
 .thumb .badges { position: absolute; top: 8px; left: 8px; right: 8px; display: flex; flex-wrap: wrap; gap: 4px; }
@@ -49,8 +49,8 @@ button:focus-visible { outline: 3px solid #ffcf54 !important; outline-offset: 3p
 .thumb .incart { position: absolute; bottom: 8px; right: 8px; background: #ffb703; color: #1a1a1a; font-weight: 900; font-size: 12px; padding: 3px 8px; border-radius: 999px; }
 .thumb .soldout { position: absolute; inset: 0; background: rgba(0,0,0,.62); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; color: #ddd; }
 .mname { font-size: 17px; font-weight: 800; margin-top: 10px; line-height: 1.45; overflow-wrap: anywhere; }
-.mdesc { font-size: 12px; color: #a8a8b2; min-height: 36px; margin-top: 4px; line-height: 1.5; overflow-wrap: anywhere; }
-.mprice { font-size: 18px; font-weight: 900; color: #ffb703; margin-top: 8px; line-height: 1.5; }
+.mdesc { font-size: 12px; color: #a8a8b2; min-height: 18px; margin-top: 4px; line-height: 1.5; overflow-wrap: anywhere; }
+.mprice { font-size: 18px; font-weight: 900; color: #ffb703; margin-top: 2px; line-height: 1.5; }
 
 /* Desktop: the page itself never scrolls; only the menu column, cart list and quiz/splash fit the viewport. */
 @media (min-width: 761px) {
@@ -179,10 +179,10 @@ button:focus-visible { outline: 3px solid #ffcf54 !important; outline-offset: 3p
   .st-key-order_layout > [data-testid="stLayoutWrapper"] > [data-testid="stHorizontalBlock"] { grid-template-columns: minmax(0, 1fr); gap: 16px; }
   .st-key-menu_grid { gap: 10px !important; }
   [class*="st-key-card_"] { padding: 10px; border-radius: 14px; gap: 10px; }
-  .thumb { height: 112px; font-size: 48px; }
+  .thumb { height: 144px; font-size: 56px; }
   .mname { font-size: 15px; min-height: 44px; margin-top: 8px; }
-  .mdesc { min-height: 54px; }
-  .mprice { font-size: 16px; margin-top: 6px; }
+  .mdesc { min-height: 36px; }
+  .mprice { font-size: 16px; margin-top: 2px; }
   .st-key-cart_panel { padding: 16px; }
   .st-key-cart_items, .st-key-dialog_cart_items { max-height: none; overflow: visible; }
   .st-key-promos { grid-template-columns: minmax(0, 1fr); gap: 10px !important; }
