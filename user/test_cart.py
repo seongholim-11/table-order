@@ -45,3 +45,14 @@ class DirectCartTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SpicyBadgeTests(unittest.TestCase):
+    def test_spicy_badge_shows_chili_count(self):
+        app = AppTest.from_file("app.py").run()
+        app.button(key="start_btn").click().run()
+        app.button(key="cat_anju").click().run()
+        html = " ".join(e.proto.body for e in app.get("html"))
+        self.assertIn("🌶🌶🌶 매운맛", html)
+        self.assertIn("🌶🌶 매운맛", html)
+        self.assertFalse(app.exception)

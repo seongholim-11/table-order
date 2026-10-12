@@ -133,12 +133,25 @@ def go(page):
 
 
 # ============================== 다이얼로그 ==============================
+def spicy_level(item):
+    """매운 정도(고추 개수). 매운맛 태그가 없으면 0."""
+    if "매운맛" not in item["tags"]:
+        return 0
+    name = item["name"]
+    if "아주 매운맛" in name:
+        return 3
+    if "보통맛" in name or "얼큰" in item["desc"]:
+        return 2
+    return 1
+
+
 def thumb_html(item, qty_in_cart=0, big=False):
     c1, c2 = CATEGORY_BY_ID[item["cat"]]["colors"]
     size = " big" if big else ""
     badges = ""
     for t in item["tags"]:
-        badges += '<span class="badge spicy">🌶 매운맛</span>' if t == "매운맛" else f'<span class="badge {t}">{t}</span>'
+        badges += (f'<span class="badge spicy">{"🌶" * spicy_level(item)} 매운맛</span>'
+                   if t == "매운맛" else f'<span class="badge {t}">{t}</span>')
     extra = f'<div class="incart">{qty_in_cart}개 담김</div>' if qty_in_cart else ""
     sold = '<div class="soldout">품절</div>' if item["soldout"] else ""
     return (f'<div class="thumb{size}" style="background:linear-gradient(135deg,{c1},{c2})">'
