@@ -235,3 +235,18 @@ def test_grade_rule_reset_returns_to_defaults(monkeypatch):
     app.button(key="rule_reset").click().run()
     assert not app.exception
     assert app.number_input(key="rule_dormant").value == ar.DEFAULT_RULE["dormant"] and app.button(key="rule_reset").disabled
+
+
+# ---- 새로고침 후 복원 (URL 쿼리) --------------------------------------------------------------------
+def test_page_and_category_are_kept_in_url_and_restored_on_reload(monkeypatch):
+    app = open_menu_page(monkeypatch, "dummy")
+    pick(app, "soup")
+    assert app.query_params["page"] == "메뉴 관리" and app.query_params["cat"] == "soup"
+    monkeypatch.setenv("ADMIN_TOKEN", "change-me")
+    fresh = AppTest.from_file(APP, default_timeout=30)  # 새로고침 = 새 세션 + 같은 URL
+    fresh.query_params["page"], fresh.query_params["cat"] = "메뉴 관리", "soup"
+    fresh.run()
+    fresh.text_input[0].set_value("change-me")
+    fresh.button[0].click().run()
+    assert not fresh.exception
+    assert fresh.sidebar.radio[0].value == "메뉴 관리" and fresh.session_state["menu_cat"] == "soup"

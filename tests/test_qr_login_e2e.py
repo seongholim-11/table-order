@@ -137,3 +137,22 @@ def test_without_server_roulette_explains_and_guest_order_still_works():
         assert not app.exception
     finally:
         api.set_client(None)
+
+
+def test_order_screen_and_category_are_restored_from_url_on_reload():
+    api.set_client(__import__("httpx").Client(base_url="http://127.0.0.1:9", timeout=1))
+    try:
+        app = AppTest.from_file(APP, default_timeout=30)
+        app.query_params["table"] = "7"
+        app.run()
+        assert app.session_state["page"] == "splash" and "page" not in app.query_params
+        app.button(key="start_btn").click().run()
+        app.button(key="cat_soup").click().run()
+        assert app.query_params["page"] == "order" and app.query_params["cat"] == "soup"
+        fresh = AppTest.from_file(APP, default_timeout=30)  # 새로고침
+        fresh.query_params["table"], fresh.query_params["page"], fresh.query_params["cat"] = "7", "order", "soup"
+        fresh.run()
+        assert not fresh.exception
+        assert fresh.session_state["page"] == "order" and fresh.session_state["cat"] == "soup"
+    finally:
+        api.set_client(None)

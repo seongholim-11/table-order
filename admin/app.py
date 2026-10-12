@@ -27,7 +27,7 @@ ss.setdefault("repo", None)
 ss.setdefault("notice", None)
 ss.setdefault("token", "")
 ss.setdefault("menu_editor_v", 0)  # 저장 후 표 편집 상태를 초기화하기 위한 번호
-ss.setdefault("menu_cat", None)  # 메뉴 관리에서 선택한 카테고리 id
+ss.setdefault("menu_cat", st.query_params.get("cat"))  # URL(?cat=)에서 복원 - 메뉴 관리에서 선택한 카테고리 id
 ss.setdefault("grade_rule", dict(DEFAULT_RULE))
 
 
@@ -572,7 +572,12 @@ store = repo.backend.store()
 with st.sidebar:
     st.html(f'<div class="sb-brand"><div class="sb-logo">🍺</div><div><div class="sb-name">식당도우미</div>'
             f'<div class="sb-sub">관리자 콘솔</div></div></div><div class="sb-label">MENU</div>')
-    page = st.radio("메뉴", PAGES, label_visibility="collapsed")
+    # 새로고침해도 보던 메뉴가 유지되도록 URL(?page=...)에 저장하고 거기서 복원한다.
+    if "nav_page" not in ss:
+        ss["nav_page"] = st.query_params["page"] if st.query_params.get("page") in PAGES else PAGES[0]
+    page = st.radio("메뉴", PAGES, key="nav_page", label_visibility="collapsed")
+    if st.query_params.get("page") != page:
+        st.query_params["page"] = page
     st.html('<div style="height:18px"></div><div class="sb-label">STORE</div>')
     st.caption(f"{store['name']} {store['branch']} · OWNER")
     st.caption("🟢 서버 데이터" if repo.source == "api" else "🧪 더미 데이터")
@@ -585,3 +590,10 @@ if ss["notice"]:
 
 {"대시보드": page_dashboard, "메뉴 관리": page_menu, "추천 가중치": page_weights, "고객 등급": page_customers,
  "주문 이력": page_orders, "마케팅": page_marketing}[page](repo)
+
+# 메뉴 관리에서 고른 카테고리도 URL에 남겨 새로고침 후 복원한다 (페이지 실행 후의 최종 선택값 기준).
+if page == "메뉴 관리" and ss["menu_cat"]:
+    if st.query_params.get("cat") != ss["menu_cat"]:
+        st.query_params["cat"] = ss["menu_cat"]
+else:
+    st.query_params.pop("cat", None)

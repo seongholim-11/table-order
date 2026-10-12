@@ -41,8 +41,10 @@ st.set_page_config(page_title=f"{STORE['name']} 테이블오더", page_icon="�
 # ============================== 상태 ==============================
 def init_state():
     ss = st.session_state
-    ss.setdefault("page", "splash")
-    ss.setdefault("cat", "best")
+    # 새로고침해도 보던 화면으로 돌아오도록 URL(?page=order&cat=...)에서 복원한다. sync_url() 이 반대 방향을 맡는다.
+    qp = st.query_params
+    ss.setdefault("page", "order" if qp.get("page") == "order" else "splash")
+    ss.setdefault("cat", qp.get("cat") if qp.get("cat") in CATEGORY_BY_ID else "best")
     ss.setdefault("cart", {})        # key -> {id, name, opt, unit, qty}
     ss.setdefault("orders", [])      # 주문 내역
     ss.setdefault("calls", [])
@@ -678,8 +680,20 @@ def render_cart(dialog=False):
             st.rerun()
 
 
+def sync_url():
+    """현재 화면을 URL 쿼리에 반영한다 (splash·AI 질문 중에는 주문 화면 기준으로 둔다)."""
+    qp = st.query_params
+    want = {} if st.session_state.page == "splash" else {"page": "order", "cat": st.session_state.cat}
+    for k in ("page", "cat"):
+        if want.get(k) is None:
+            qp.pop(k, None)
+        elif qp.get(k) != want[k]:
+            qp[k] = want[k]
+
+
 def main():
     init_state()
+    sync_url()
     st.html(Path(__file__).with_name("app.css"))
     if st.session_state.page == "splash":
         render_splash()
