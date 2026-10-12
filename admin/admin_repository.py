@@ -279,6 +279,18 @@ def data_source_mode() -> str:
     return mode if mode in MODES else "auto"
 
 
+def skip_token_login() -> bool:
+    """ADMIN_SKIP_TOKEN (기본 켜짐) 이면 토큰 입력 화면 없이 ADMIN_TOKEN 으로 자동 로그인한다.
+
+    임시 조치다. 0/false/no/off 로 바꾸면 토큰 입력 화면이 다시 나온다.
+    """
+    return os.getenv("ADMIN_SKIP_TOKEN", "1").strip().lower() not in {"0", "false", "no", "off"}
+
+
+def default_admin_token() -> str:
+    return os.getenv("ADMIN_TOKEN", "change-me")
+
+
 class LoginResult:
     def __init__(self, repo=None, error: str | None = None, notice: str | None = None):
         self.repo, self.error, self.notice = repo, error, notice

@@ -250,3 +250,21 @@ def test_page_and_category_are_kept_in_url_and_restored_on_reload(monkeypatch):
     fresh.button[0].click().run()
     assert not fresh.exception
     assert fresh.sidebar.radio[0].value == "메뉴 관리" and fresh.session_state["menu_cat"] == "soup"
+
+
+def test_skip_token_enters_without_login(monkeypatch):
+    monkeypatch.setenv("DATA_SOURCE", "dummy")
+    monkeypatch.setenv("ADMIN_TOKEN", "change-me")
+    monkeypatch.setenv("ADMIN_SKIP_TOKEN", "1")
+    app = AppTest.from_file(APP, default_timeout=30).run()
+    assert not app.exception
+    assert len(app.text_input) == 0  # 토큰 입력 화면이 없다
+    assert app.session_state["owner"] is True
+
+
+def test_skip_token_off_shows_login(monkeypatch):
+    monkeypatch.setenv("DATA_SOURCE", "dummy")
+    monkeypatch.setenv("ADMIN_SKIP_TOKEN", "0")
+    app = AppTest.from_file(APP, default_timeout=30).run()
+    assert len(app.text_input) == 1
+    assert app.session_state["owner"] is False

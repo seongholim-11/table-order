@@ -625,6 +625,14 @@ def page_marketing(repo):
     {"대시보드": marketing_dashboard, "AI": marketing_ai_tab}[tab](repo)
 
 
+if not ss["owner"] and repo_mod.skip_token_login() and not ss.get("auto_login_failed"):
+    # 임시: 토큰 입력 없이 입장. 실패하면 아래에서 기존 토큰 입력 화면을 보여준다. (ADMIN_SKIP_TOKEN=0 으로 끔)
+    _auto = repo_mod.connect(repo_mod.default_admin_token())
+    if _auto.error:
+        ss["auto_login_failed"] = True
+    else:
+        ss["owner"], ss["repo"], ss["token"], ss["notice"] = True, _auto.repo, repo_mod.default_admin_token(), _auto.notice
+
 if not ss["owner"]:
     login()
     st.stop()
